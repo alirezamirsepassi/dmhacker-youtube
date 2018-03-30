@@ -246,6 +246,34 @@ app.get('/search/:query', function(req, res) {
 });
 
 
+app.get('/video/:videoid', function(req, res) {
+
+    video_id        = req.params.videoid
+    video_quality   = req.query.quality
+
+    ytdl.getInfo(video_id, function(err, info) {
+        if (err) {
+            res.status(500).json({
+              state: 'error',
+              message: err.message
+            });
+        } else {
+            res.writeHead(200, {
+                'Content-Type': 'video/mp4'
+            });
+        
+            ytdl(video_id, {
+                quality: video_quality
+            })
+            .pipe(res);
+        }
+    });
+    
+    
+});
+
+
+
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
